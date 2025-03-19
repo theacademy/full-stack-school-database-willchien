@@ -9,10 +9,12 @@ public class StudentMapper implements RowMapper<Student> {
     @Override
     public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
         //YOUR CODE STARTS HERE
+        Student s = new Student();
+        s.setStudentId(rs.getInt("sid"));
+        s.setStudentFirstName(rs.getString("fName"));
+        s.setStudentLastName(rs.getString("lName"));
 
-
-        return null;
-
+        return s;
         //YOUR CODE ENDS HERE
     }
 }
