@@ -28,7 +28,7 @@ public class TeacherDaoImpl implements TeacherDao {
         KeyHolder k = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(INSERT_TEACHER, new String[]{"tid"});
-            ps.setInt(1, teacher.getTeacherId());
+            ps.setString(1, teacher.getTeacherFName());
             ps.setString(2, teacher.getTeacherLName());
             ps.setString(3, teacher.getDept());
             return ps;
@@ -61,11 +61,12 @@ public class TeacherDaoImpl implements TeacherDao {
     @Override
     public void updateTeacher(Teacher t) {
         //YOUR CODE STARTS HERE
-        final String UPDATE_TEACHER = "UPDATE teacher SET tFName = ?, tLName = ?, dept = ?";
+        final String UPDATE_TEACHER = "UPDATE teacher SET tFName = ?, tLName = ?, dept = ? WHERE tid = ?";
         jdbcTemplate.update(UPDATE_TEACHER,
                             t.getTeacherFName(),
                             t.getTeacherLName(),
-                            t.getDept());
+                            t.getDept(),
+                            t.getTeacherId());
         //YOUR CODE ENDS HERE
     }
 
