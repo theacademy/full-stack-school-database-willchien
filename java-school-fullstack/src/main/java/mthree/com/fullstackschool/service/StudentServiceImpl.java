@@ -16,6 +16,7 @@ public class StudentServiceImpl implements StudentServiceInterface {
 
     //YOUR CODE STARTS HERE
     StudentDao dao;
+    CourseDao cdao;
 
     public StudentServiceImpl(StudentDao dao){
         this.dao = dao;
@@ -73,10 +74,12 @@ public class StudentServiceImpl implements StudentServiceInterface {
     public void deleteStudentFromCourse(int studentId, int courseId) {
         //YOUR CODE STARTS HERE
         Student s = dao.findStudentById(studentId);
+        Course c = cdao.findCourseById(courseId);
         if(s.getStudentFirstName().equals("Student Not Found")){
             System.out.println("Student not found");
-        }
-        else{
+        } else if(c.getCourseName().equals("Course Not Found")){
+            System.out.println("Course not found");
+        } else{
             System.out.println("Student: " + studentId + " deleted from course: " + courseId);
             dao.deleteStudentFromCourse(studentId, courseId);
         }
@@ -86,10 +89,12 @@ public class StudentServiceImpl implements StudentServiceInterface {
     public void addStudentToCourse(int studentId, int courseId) {
         //YOUR CODE STARTS HERE
         Student s = dao.findStudentById(studentId);
+        Course c = cdao.findCourseById(courseId);
         if(s.getStudentFirstName().equals("Student Not Found")){
             System.out.println("Student not found");
-        }
-        else{
+        } else if(c.getCourseName().equals("Course Not Found")){
+            System.out.println("Course not found");
+        } else{
             try {
                 System.out.println("Student: " + studentId + " added to course: " + courseId);
                 dao.addStudentToCourse(studentId, courseId);
