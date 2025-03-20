@@ -72,7 +72,7 @@ public class TeacherDaoImpl implements TeacherDao {
                 + "JOIN course c ON cs.course_id = c.cid WHERE c.teacherId = ?";
         jdbcTemplate.update(DELETE_COURSE_STUDENT_BY_TEACHER, id);
 
-        final String DELETE_COURSE_BY_TEACHER = "DELETE FROM course WHERE c.teacherId = ?";
+        final String DELETE_COURSE_BY_TEACHER = "DELETE FROM course WHERE teacherId = ?";
         jdbcTemplate.update(DELETE_COURSE_BY_TEACHER, id);
 
         final String DELETE_TEACHER = "DELETE FROM teacher WHERE tid = ?";
