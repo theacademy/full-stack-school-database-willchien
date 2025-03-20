@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +30,14 @@ public class StudentDaoImpl implements StudentDao {
     public Student createNewStudent(Student student) {
         //YOUR CODE STARTS HERE
         final String INSERT_STUDENT = "INSERT INTO student(fName, lName) VALUES (?,?)";
-        jdbcTemplate.update(INSERT_STUDENT,
-                            student.getStudentFirstName(),
-                            student.getStudentLastName());
-        int newId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
-        student.setStudentId(newId);
+        KeyHolder k = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_STUDENT, new String[]{"sid"});
+            ps.setString(1, student.getStudentFirstName());
+            ps.setString(2, student.getStudentLastName());
+            return ps;
+        }, k);
+        student.setStudentId(k.getKey().intValue());
         return student;
         //YOUR CODE ENDS HERE
     }

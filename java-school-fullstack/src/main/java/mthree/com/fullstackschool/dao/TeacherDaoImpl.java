@@ -5,6 +5,7 @@ import mthree.com.fullstackschool.model.Teacher;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -24,12 +25,15 @@ public class TeacherDaoImpl implements TeacherDao {
     public Teacher createNewTeacher(Teacher teacher) {
         //YOUR CODE STARTS HERE
         final String INSERT_TEACHER = "INSERT INTO teacher(tFName, tLName, dept) VALUES(?,?,?)";
-        jdbcTemplate.update(INSERT_TEACHER,
-                            teacher.getTeacherFName(),
-                            teacher.getTeacherLName(),
-                            teacher.getDept());
-        int newId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
-        teacher.setTeacherId(newId);
+        KeyHolder k = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_TEACHER, new String[]{"tid"});
+            ps.setInt(1, teacher.getTeacherId());
+            ps.setString(2, teacher.getTeacherLName());
+            ps.setString(3, teacher.getDept());
+            return ps;
+        }, k);
+        teacher.setTeacherId(k.getKey().intValue());
         return teacher;
         //YOUR CODE ENDS HERE
     }
@@ -68,13 +72,6 @@ public class TeacherDaoImpl implements TeacherDao {
     @Override
     public void deleteTeacher(int id) {
         //YOUR CODE STARTS HERE
-        final String DELETE_COURSE_STUDENT_BY_TEACHER = "DELETE cs.* FROM course_student cs "
-                + "JOIN course c ON cs.course_id = c.cid WHERE c.teacherId = ?";
-        jdbcTemplate.update(DELETE_COURSE_STUDENT_BY_TEACHER, id);
-
-        final String DELETE_COURSE_BY_TEACHER = "DELETE FROM course WHERE teacherId = ?";
-        jdbcTemplate.update(DELETE_COURSE_BY_TEACHER, id);
-
         final String DELETE_TEACHER = "DELETE FROM teacher WHERE tid = ?";
         jdbcTemplate.update(DELETE_TEACHER, id);
         //YOUR CODE ENDS HERE
